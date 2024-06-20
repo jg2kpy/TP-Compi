@@ -1,0 +1,6 @@
+Buenas noches, le saluda Javier de atención al cliente, ¿en qué puedo ayudarle?
+Lo lamento. ¿Puede proporcionarme su número de usuario o dirección de correo electrónico?
+Gracias. Permítame un momento para verificar.
+He reseteado su contraseña. Debería recibir un correo con instrucciones para establecer una nueva contraseña. ¿Le ha llegado el correo?
+Me alegra escuchar eso. ¿Hay algo más en lo que pueda ayudarle hoy?
+Gracias por contactarnos. Que tenga una buena noche.
