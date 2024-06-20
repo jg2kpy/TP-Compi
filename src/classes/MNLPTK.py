@@ -1,5 +1,6 @@
 from classes.Tokens import Tokens
 
+#Minimal Natural Language Processing Tokenizer
 class MNLPTK:
     def __init__(self, tokens_directory='./tokens/', verbose=False):
 

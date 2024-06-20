@@ -1,4 +1,5 @@
 import classes.MNLPTK as mnlptk_class
+#MNLPTK: Minimal Natural Language Processing Tokenizer
 
 # Número de ejemplos a procesar
 examples = 6
