@@ -19,7 +19,7 @@ def main(verbose=False):
         atc_score = mnlptk.score(atc_file)
         exp_score = mnlptk.score(exp_file)
         # Imprimir la puntuación general promedio
-        print(f'Puntuación general: {str((atc_score + exp_score) / 2)} \n')
+        print(f'Puntuación general: {str(round((atc_score + exp_score) / 2))} \n')
 
     # Mensaje informativo
     print('Para cambiar un lexema de su token, mueva el lexema en el fichero correspondiente y vuelva a ejecutar el programa.')
