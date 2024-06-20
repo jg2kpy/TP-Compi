@@ -113,11 +113,7 @@ class MNLPTK:
 
     # Verificar si hay un saludo en los lexemas usados
     def verify_greeting(self, lexemas_used):
-        greeting = False
-        for lexema, token in lexemas_used.items():
-            if lexema == 'hola' or lexema == 'buenos' or lexema == 'buenas' or lexema == 'tardes' or lexema == 'dias' or lexema == 'noches':
-                greeting = True
-                break
+        greeting = any(lexema in ['hola', 'buenos', 'buenas', 'tardes', 'dias', 'noches'] for lexema in lexemas_used)
         print('Saludo detectado\n' if greeting else 'Saludo no detectado\n')
 
 
