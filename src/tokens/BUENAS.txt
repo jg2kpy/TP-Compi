@@ -1,4 +1,7 @@
 bueno
+buenos
+saluda
+saludo
 agradable
 satisfactorio
 eficiente

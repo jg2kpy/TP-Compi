@@ -1,7 +1,7 @@
 from classes.Tokens import Tokens
 
 class MNLPTK:
-    def __init__(self, tokens_directory='./tokens/'):
+    def __init__(self, tokens_directory='./tokens/', verbose=False):
 
         self.tokens = Tokens()
         self.tokens.token_dir = tokens_directory
@@ -12,6 +12,7 @@ class MNLPTK:
             'BUENAS': 5,
             'MUY_BUENAS': 10
         }
+        self.verbose = verbose
 
         for token_name in self.tokens_score.keys():
             try:
@@ -35,7 +36,23 @@ class MNLPTK:
     }
 
     def score(self, file_dir):
-        final_score = 0
+        new_lexamas, final_score, lexemas_used = self.lexical_analyzer(file_dir)
+        final_score = round((final_score + 10) * 5, 2)
+
+        for cut_point in sorted(self.score_labels.keys(), reverse=True):
+            if final_score >= cut_point:
+                print(f"'{file_dir}': {final_score} {self.score_labels[cut_point]}")
+                print(str(new_lexamas) + ' lexemas a NEUTRO')
+
+                if self.verbose:
+                    self.verify_greeting(lexemas_used)
+                    self.list_lexemas(lexemas_used)
+
+                return final_score
+
+
+    def lexical_analyzer(self, file_dir):
+        lexemas_used = {}
         with open(file_dir, 'r', encoding='utf-8') as input_file:
             try:
                 tokenized_text = self.tokenizer(input_file.read())
@@ -50,8 +67,9 @@ class MNLPTK:
                     else:
                         self.tokens.add(lexemas, 'NEUTRAS')
                         new_lexamas = new_lexamas + 1
+                    lexemas_used[lexemas] = self.tokens.hash_table[lexemas]
 
-                final_score = partial_score / non_neutral_lexemas
+                return (new_lexamas, partial_score / non_neutral_lexemas, lexemas_used)
             except FileNotFoundError:
                 print(f"Error: Fichero '{file_dir}' no encotrado.")
             except IOError as e:
@@ -59,14 +77,6 @@ class MNLPTK:
             except Exception as e:
                 print(f"Error inesperado: {e}")
 
-        final_score = round((final_score + 10) * 5, 2)
-
-        for cut_point in sorted(self.score_labels.keys(), reverse=True):
-            if final_score >= cut_point:
-                #print(f"Fichero: '{file_dir}' Puntuación: {final_score} {self.score_labels[cut_point]}")
-                print(f"'{file_dir}': {final_score} {self.score_labels[cut_point]}")
-                print(str(new_lexamas) + ' lexemas a NEUTRO')
-                return final_score
 
 
     punctuation_signs_spanish = '¡!¿?".,;:()[]{}<>-—–"«»“”‘’'
@@ -78,3 +88,21 @@ class MNLPTK:
             clean_word = clean_word.lower()
             processed_words.append(clean_word)
         return processed_words
+
+
+    def verify_greeting(self, lexemas_used):
+        greeting = False
+        for lexema, token in lexemas_used.items():
+            if lexema == 'hola' or lexema == 'buenos' or lexema == 'buenas' or lexema == 'tardes' or lexema == 'dias' or lexema == 'noches':
+                greeting = True
+                break
+        print('Saludo detectado\n' if greeting else 'Saludo no detectado\n')
+
+
+    def list_lexemas(self, lexemas_used):
+        print('Lexemas usados:')
+        for token1 in self.tokens_score.keys():
+            print(token1)
+            for lexema, token2 in lexemas_used.items():
+                if token1 == token2:
+                    print(lexema, end=', ')
