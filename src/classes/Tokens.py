@@ -1,6 +1,6 @@
 class Tokens:
-    token_dir = '' # Directorio de tokens
-    hash_table = {} # TO DO: Hacer un hash table
+    token_dir = ''  # Directorio de tokens
+    hash_table = {}  # TO DO: Hacer un hash table
 
     def from_text(self, token_name, text):
         # Agregar lexemas a la tabla hash desde un texto

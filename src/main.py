@@ -5,15 +5,22 @@ import os
 tokens_dir = './tokens/'
 examples_dir = '../examples/'
 
+
 def main(verbose=False):
     mnlptk = MNLPTK(tokens_dir, verbose)
 
-    layout = [
-        [sg.Text('Archivo ATC:'), sg.InputText(key='-ATC-', size=(40, 1)), sg.FileBrowse(file_types=(("Text Files", "*.txt"),))],
-        [sg.Text('Archivo EXP:'), sg.InputText(key='-EXP-', size=(40, 1)), sg.FileBrowse(file_types=(("Text Files", "*.txt"),))],
-        [sg.Button('Procesar'), sg.Button('Salir')],
-        [sg.Output(size=(80, 20), key='-OUTPUT-')]
-    ]
+    layout = [[
+        sg.Text('Archivo ATC:'),
+        sg.InputText(key='-ATC-', size=(40, 1)),
+        sg.FileBrowse(file_types=(("Text Files", "*.txt"), ))
+    ],
+              [
+                  sg.Text('Archivo EXP:'),
+                  sg.InputText(key='-EXP-', size=(40, 1)),
+                  sg.FileBrowse(file_types=(("Text Files", "*.txt"), ))
+              ], [sg.Button('Procesar'),
+                  sg.Button('Salir')],
+              [sg.Output(size=(80, 20), key='-OUTPUT-')]]
 
     window = sg.Window('MNLPTK Processor', layout)
 
@@ -34,6 +41,7 @@ def main(verbose=False):
                 print('Por favor, seleccione archivos válidos.')
 
     window.close()
+
 
 if __name__ == "__main__":
     main()

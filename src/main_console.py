@@ -8,6 +8,7 @@ tokens_dir = './tokens/'
 # Directorio donde se encuentran los archivos de ejemplos
 examples_dir = '../examples/'
 
+
 def main(verbose=False):
     mnlptk = mnlptk_class.MNLPTK(tokens_dir, verbose)
     for i in range(examples):
@@ -16,12 +17,16 @@ def main(verbose=False):
         atc_score = mnlptk.score(atc_file)
         exp_score = mnlptk.score(exp_file)
         # Imprimir la puntuación general promedio
-        print(f'Puntuación general: {str(round((atc_score + exp_score) / 2))} \n')
+        print(
+            f'Puntuación general: {str(round((atc_score + exp_score) / 2))} \n'
+        )
 
     # Mensaje informativo
-    print('Para cambiar un lexema de su token, mueva el lexema en el fichero correspondiente y vuelva a ejecutar el programa.')
+    print(
+        'Para cambiar un lexema de su token, mueva el lexema en el fichero correspondiente y vuelva a ejecutar el programa.'
+    )
+
 
 # Ejecutar la función principal si el script se ejecuta directamente
 if __name__ == "__main__":
     main()
-
