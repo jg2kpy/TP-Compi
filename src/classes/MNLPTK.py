@@ -49,7 +49,7 @@ class MNLPTK:
         final_score = round((final_score + 10) * 5, 2)
 
         for cut_point in sorted(self.score_labels.keys(), reverse=True):
-            if final_score >= cut_point:
+            if final_score > cut_point:
                 print(f"'{file_dir}': {final_score} {self.score_labels[cut_point]}")
                 print(str(new_lexamas) + ' lexemas a NEUTRO')
 
