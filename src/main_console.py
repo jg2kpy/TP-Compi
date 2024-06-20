@@ -9,13 +9,10 @@ tokens_dir = './tokens/'
 examples_dir = '../examples/'
 
 def main(verbose=False):
-    # Crear una instancia de la clase MNLPTK
     mnlptk = mnlptk_class.MNLPTK(tokens_dir, verbose)
     for i in range(examples):
-        # Generar nombres de archivos para ATC y EXP
         atc_file = f'{examples_dir}ATC_{i}.txt'
         exp_file = f'{examples_dir}EXP_{i}.txt'
-        # Obtener las puntuaciones de los archivos
         atc_score = mnlptk.score(atc_file)
         exp_score = mnlptk.score(exp_file)
         # Imprimir la puntuación general promedio
