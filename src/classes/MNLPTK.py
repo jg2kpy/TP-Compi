@@ -80,11 +80,10 @@ class MNLPTK:
 
                 # Iterar a través de los lexemas tokenizados
                 for lexemas in tokenized_text:
-                    if lexemas in self.tokens.hash_table:
-                        partial_score += self.tokens_score[
-                            self.tokens.hash_table[lexemas]]
-                        if self.tokens_score[
-                                self.tokens.hash_table[lexemas]] != 0:
+                    token = self.tokens.get(lexemas)
+                    if token:
+                        partial_score += self.tokens_score[token]
+                        if self.tokens_score[token] != 0:
                             non_neutral_lexemas += 1
                     else:
                         self.tokens.add(lexemas, 'NEUTRAS')

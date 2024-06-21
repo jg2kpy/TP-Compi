@@ -7,6 +7,10 @@ class Tokens:
         for lexema in text:
             self.hash_table[lexema] = token_name
 
+    def get(self, lexema):
+        # Obtener el token del lexema dado
+        return self.hash_table.get(lexema, None)
+
     def add(self, lexema, token_name):
         # Agregar un lexema a la tabla hash y actualizar el archivo correspondiente
         self.hash_table[lexema] = token_name
