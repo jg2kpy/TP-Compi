@@ -8,9 +8,10 @@ sudo apt-get install python pip
 ```
 Windows y MacOS: https://www.python.org/
 
-Para ejecutar con interfaz gráfica se requiere PySimpleGUI:
+Para ejecutar con interfaz gráfica se requiere PySimpleGUI
+y para el gráfico de barras final se requiere Matplotlib:
 ```sh
-pip install pysimplegui
+pip install pysimplegui matplotlib
 ```
 
 Luego ejecutamos con:
