@@ -1,7 +1,5 @@
 from classes.Tokens import Tokens
 
-
-#Minimal Natural Language Processing Tokenizer
 class MNLPTK:
 
     def __init__(self, tokens_directory='./tokens/', verbose=False):
@@ -20,22 +18,34 @@ class MNLPTK:
         # Leer archivos de tokens y procesarlos
         for token_name in self.tokens_score.keys():
             try:
-                with open(f'{tokens_directory}{token_name}.txt',
-                          'r',
-                          encoding='utf-8') as token_file:
+                with open(f'{tokens_directory}{token_name}.txt', 'r', encoding='utf-8') as token_file:
                     tokenized_text = self.tokenizer(token_file.read())
                     self.tokens.from_text(token_name, tokenized_text)
             except FileNotFoundError:
-                print(
-                    f"Error: Fichero '{tokens_directory}{token_name}.txt' no encontrado."
-                )
+                print(f"Error: Fichero '{tokens_directory}{token_name}.txt' no encontrado.")
             except IOError as e:
-                print(
-                    f"Error de E/S '{tokens_directory}{token_name}.txt': {e}")
+                print(f"Error de E/S '{tokens_directory}{token_name}.txt': {e}")
             except Exception as e:
                 print(f"Error inesperado: {e}")
 
-    # Etiquetas de puntuación
+        self.greetings = self.load_phrases(f'{tokens_directory}SALUDOS.txt')
+        self.farewells = self.load_phrases(f'{tokens_directory}DESPEDIDAS.txt')
+
+    def load_phrases(self, file_path):
+        phrases = []
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                for line in file:
+                    line = self.tokenizer(line)
+                    phrases.append(line)
+        except FileNotFoundError:
+            print(f"Error: Fichero '{file_path}' no encontrado.")
+        except IOError as e:
+            print(f"Error de E/S '{file_path}': {e}")
+        except Exception as e:
+            print(f"Error inesperado: {e}")
+        return phrases
+
     score_labels = {
         90: '(5/5 MUY BUENO)',
         75: '(4/5 BUENO)',
@@ -44,12 +54,10 @@ class MNLPTK:
         0: '(1/5 MUY MALO)'
     }
 
-    # Calcular la puntuación de un archivo
     def score(self, file_dir, user):
         print(f'Procesando archivo {file_dir}...')
-        new_lexamas, final_score, lexemas_used, tokenized_text = self.lexical_analyzer(
-            file_dir)
-        if new_lexamas  > 0:
+        new_lexamas, final_score, lexemas_used, tokenized_text = self.lexical_analyzer(file_dir)
+        if new_lexamas > 0:
             print(f'Nuevos lexemas detectados: {new_lexamas} a NEUTRAS\n')
 
         final_score = round((final_score + 10) * 5, 2)
@@ -85,14 +93,11 @@ class MNLPTK:
 
         with open(file_dir, 'r', encoding='utf-8') as input_file:
             try:
-
-                # Tokenizar el contenido del archivo
                 tokenized_text = self.tokenizer(input_file.read())
                 partial_score = 0
                 non_neutral_lexemas = 1
                 new_lexamas = 0
 
-                # Iterar a través de los lexemas tokenizados
                 for lexemas in tokenized_text:
                     token = self.tokens.get(lexemas)
                     if token:
@@ -105,20 +110,16 @@ class MNLPTK:
 
                     lexemas_used[lexemas] = self.tokens.hash_table[lexemas]
 
-                # Devolver el número de nuevos lexemas, la puntuación parcial promedio y los lexemas utilizados
-                return (new_lexamas, partial_score / non_neutral_lexemas,
-                        lexemas_used, tokenized_text)
+                return (new_lexamas, partial_score / non_neutral_lexemas, lexemas_used, tokenized_text)
             except FileNotFoundError:
-                print(f"Error: Fichero '{file_dir}' no encotrado.")
+                print(f"Error: Fichero '{file_dir}' no encontrado.")
             except IOError as e:
                 print(f"Error de E/S '{file_dir}': {e}")
             except Exception as e:
                 print(f"Error inesperado: {e}")
 
-    # Signos de puntuación en español
     punctuation_signs_spanish = '¡!¿?".,;:()[]{}<>-—–"«»“”‘’'
 
-    # Tokenizar el texto
     def tokenizer(self, text):
         processed_words = []
         for word in text.split():
@@ -127,7 +128,6 @@ class MNLPTK:
             processed_words.append(clean_word)
         return processed_words
 
-    # Verificar si hay un saludo en los lexemas usados
     def verify(self, tokenized_text, words_to_verify):
         detected = False
 
@@ -142,7 +142,6 @@ class MNLPTK:
 
         return detected
 
-    # Listar los lexemas usados por categoría
     def list_lexemas(self, lexemas_used):
         print('Lexemas usados:')
         list_lexemas = []
@@ -151,65 +150,7 @@ class MNLPTK:
                 for lexema, token2 in lexemas_used.items():
                     if token1 == token2:
                         list_lexemas.append(lexema)
-                if list_lexemas != []:
+                if list_lexemas:
                     print(f'{token1}: {", ".join(list_lexemas)}')
                 list_lexemas = []
         print()
-
-
-    greetings = [
-            ['hola'],
-            ['buenos', 'días'],
-            ['buenas', 'tardes'],
-            ['buenas', 'noches'],
-            ['buen', 'dia'],
-            ['buen', 'tarde'],
-            ['buen', 'noche'],
-            ['que', 'tal'],
-            ['como', 'estas'],
-            ['como', 'esta'],
-            ['saludos'],
-            ['hey'],
-            ['hi'],
-            ['hello'],
-            ['buen', 'día'],
-            ['buenas'],
-            ['buenos'],
-            ['qué', 'tal'],
-            ['hola', 'qué', 'tal'],
-            ['hola', 'como', 'estas'],
-            ['hola', 'como', 'esta'],
-            ['muy', 'buenos', 'dias'],
-            ['muy', 'buenas', 'tardes'],
-            ['muy', 'buenas', 'noches']
-        ]
-
-    farewells = [
-            ['adiós'],
-            ['hasta', 'luego'],
-            ['hasta', 'pronto'],
-            ['hasta', 'mañana'],
-            ['nos', 'vemos'],
-            ['me', 'retiro'],
-            ['cuídese'],
-            ['cuidese'],
-            ['buenas', 'noches'],
-            ['gracias', 'por', 'su', 'atención'],
-            ['le', 'agradezco', 'su', 'tiempo'],
-            ['fue', 'un', 'placer'],
-            ['ha', 'sido', 'un', 'placer'],
-            ['que', 'tenga', 'un', 'buen', 'día'],
-            ['que', 'tenga', 'un', 'exelente', 'día'],
-            ['que', 'tenga', 'una', 'buena', 'tarde'],
-            ['que', 'tenga', 'una', 'buena', 'noche'],
-            ['hasta', 'la', 'vista'],
-            ['nos', 'vemos', 'pronto'],
-            ['con', 'su', 'permiso'],
-            ['quedo', 'a', 'sus', 'órdenes'],
-            ['estoy', 'a', 'sus', 'órdenes'],
-            ['quedo', 'a', 'su', 'disposición'],
-            ['estoy', 'a', 'su', 'disposición'],
-            ['gracias', 'por', 'todo'],
-            ['muchas', 'gracias'],
-            ['hasta', 'la', 'próxima']
-        ]
