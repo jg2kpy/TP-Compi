@@ -20,7 +20,7 @@ def main(verbose=True):
         [sg.Output(size=(80, 20), key='-OUTPUT-')]
     ]
 
-    window = sg.Window('MNLPTK Processor', layout)
+    window = sg.Window('Mininal Natural Language Processing Tokenizer', layout)
 
     while True:
         event, values = window.read()

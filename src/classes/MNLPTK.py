@@ -1,5 +1,6 @@
 from classes.Tokens import Tokens
 
+#Mininal Natural Language Processing Tokenizer
 class MNLPTK:
 
     def __init__(self, tokens_directory='./tokens/', verbose=False):
@@ -55,7 +56,7 @@ class MNLPTK:
     }
 
     def score(self, file_dir, user):
-        print(f'Procesando archivo {file_dir}...')
+        print(f'Procesando archivo {file_dir}')
         new_lexamas, final_score, lexemas_used, tokenized_text = self.lexical_analyzer(file_dir)
         if new_lexamas > 0:
             print(f'Nuevos lexemas detectados: {new_lexamas} a NEUTRAS\n')
