@@ -49,6 +49,8 @@ class MNLPTK:
         print(f'Procesando archivo {file_dir}...')
         new_lexamas, final_score, lexemas_used, tokenized_text = self.lexical_analyzer(
             file_dir)
+        if new_lexamas  > 0:
+            print(f'Nuevos lexemas detectados: {new_lexamas} a NEUTRAS\n')
 
         final_score = round((final_score + 10) * 5, 2)
         if user == 'ATC':
