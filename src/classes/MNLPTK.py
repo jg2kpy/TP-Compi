@@ -73,7 +73,6 @@ class MNLPTK:
                 # Tokenizar el contenido del archivo
                 tokens, new_lexamas, lexemas_used = self.tokenizer(input_file.read())
                 non_neutral_lexemas = 1
-                new_lexamas = 0
 
                 # Iterar a través de los lexemas tokenizados
                 partial_score = 0
