@@ -13,14 +13,19 @@ def main(verbose=True):
     scores = []
 
     for i in range(examples):
+        print(f'Ejecutando ejemplo {i}')
         atc_file = f'{examples_dir}ATC_{i}.txt'
         exp_file = f'{examples_dir}EXP_{i}.txt'
-        atc_score = mnlptk.score(atc_file)
-        exp_score = mnlptk.score(exp_file)
+        atc_score = mnlptk.score(atc_file, 'ATC')
+        exp_score = mnlptk.score(exp_file, 'EXP')
         avg_score = round((atc_score + exp_score) / 2)
         scores.append(avg_score)
         # Imprimir la puntuación general promedio
-        print(f'Puntuación general: {avg_score} \n')
+        for cut_point in sorted(mnlptk.score_labels.keys(), reverse=True):
+            if avg_score > cut_point:
+                print(f'Puntuación general: {avg_score} {mnlptk.score_labels[cut_point]}\n')
+                break
+        print(f'Fin de ejemplo {i}\n')
 
     # Mensaje informativo
     print('Para cambiar un lexema de su token, mueva el lexema en el fichero correspondiente y vuelva a ejecutar el programa.')

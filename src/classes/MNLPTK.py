@@ -45,24 +45,30 @@ class MNLPTK:
     }
 
     # Calcular la puntuación de un archivo
-    def score(self, file_dir):
-
-        new_lexamas, final_score, lexemas_used = self.lexical_analyzer(
+    def score(self, file_dir, user):
+        print(f'Procesando archivo {file_dir}...')
+        new_lexamas, final_score, lexemas_used, tokenized_text = self.lexical_analyzer(
             file_dir)
 
         final_score = round((final_score + 10) * 5, 2)
+        if user == 'ATC':
+            greetings = self.verify(tokenized_text, self.greetings)
+            farewells = self.verify(tokenized_text, self.farewells)
+            if greetings:
+                print('Saludo detectado +5 puntos')
+                final_score += 5
+            if farewells:
+                print('Despedida detectada +5 puntos')
+                final_score += 5
 
         for cut_point in sorted(self.score_labels.keys(), reverse=True):
             if final_score > cut_point:
-                print(
-                    f"'{file_dir}': {final_score} {self.score_labels[cut_point]}"
-                )
-                print(str(new_lexamas) + ' lexemas a NEUTRO')
+                score = self.score_labels[cut_point]
 
-                if self.verbose:
-
-                    self.verify_greeting(lexemas_used)
+                if user == 'EXP':
                     self.list_lexemas(lexemas_used)
+
+                print(f'Puntuación {user}: {final_score} {score}\n')
 
                 return final_score
 
@@ -87,13 +93,13 @@ class MNLPTK:
                             non_neutral_lexemas += 1
                     else:
                         self.tokens.add(lexemas, 'NEUTRAS')
-                        new_lexamas = new_lexamas + 1
+                        new_lexamas += 1
 
                     lexemas_used[lexemas] = self.tokens.hash_table[lexemas]
 
                 # Devolver el número de nuevos lexemas, la puntuación parcial promedio y los lexemas utilizados
                 return (new_lexamas, partial_score / non_neutral_lexemas,
-                        lexemas_used)
+                        lexemas_used, tokenized_text)
             except FileNotFoundError:
                 print(f"Error: Fichero '{file_dir}' no encotrado.")
             except IOError as e:
@@ -114,17 +120,87 @@ class MNLPTK:
         return processed_words
 
     # Verificar si hay un saludo en los lexemas usados
-    def verify_greeting(self, lexemas_used):
-        greeting = any(
-            lexema in ['hola', 'buenos', 'buenas', 'tardes', 'dias', 'noches']
-            for lexema in lexemas_used)
-        print('Saludo detectado\n' if greeting else 'Saludo no detectado\n')
+    def verify(self, tokenized_text, words_to_verify):
+        detected = False
+
+        for word_sequence in words_to_verify:
+            sequence_length = len(word_sequence)
+            for i in range(len(tokenized_text) - sequence_length + 1):
+                if tokenized_text[i:i + sequence_length] == word_sequence:
+                    detected = True
+                    break
+            if detected:
+                break
+
+        return detected
 
     # Listar los lexemas usados por categoría
     def list_lexemas(self, lexemas_used):
-        print('Lexemas usados:')
+        print('\nLexemas usados:')
+        list_lexemas = []
         for token1 in self.tokens_score.keys():
-            print(token1)
-            for lexema, token2 in lexemas_used.items():
-                if token1 == token2:
-                    print(lexema, end=', ')
+            if token1 != 'NEUTRAS':
+                for lexema, token2 in lexemas_used.items():
+                    if token1 == token2:
+                        list_lexemas.append(lexema)
+                if list_lexemas != []:
+                    print(f'{token1}: {", ".join(list_lexemas)}')
+                list_lexemas = []
+        print()
+
+
+    greetings = [
+            ['hola'],
+            ['buenos', 'días'],
+            ['buenas', 'tardes'],
+            ['buenas', 'noches'],
+            ['buen', 'dia'],
+            ['buen', 'tarde'],
+            ['buen', 'noche'],
+            ['que', 'tal'],
+            ['como', 'estas'],
+            ['como', 'esta'],
+            ['saludos'],
+            ['hey'],
+            ['hi'],
+            ['hello'],
+            ['buen', 'día'],
+            ['buenas'],
+            ['buenos'],
+            ['qué', 'tal'],
+            ['hola', 'qué', 'tal'],
+            ['hola', 'como', 'estas'],
+            ['hola', 'como', 'esta'],
+            ['muy', 'buenos', 'dias'],
+            ['muy', 'buenas', 'tardes'],
+            ['muy', 'buenas', 'noches']
+        ]
+
+    farewells = [
+            ['adiós'],
+            ['hasta', 'luego'],
+            ['hasta', 'pronto'],
+            ['hasta', 'mañana'],
+            ['nos', 'vemos'],
+            ['me', 'retiro'],
+            ['cuídese'],
+            ['cuidese'],
+            ['buenas', 'noches'],
+            ['gracias', 'por', 'su', 'atención'],
+            ['le', 'agradezco', 'su', 'tiempo'],
+            ['fue', 'un', 'placer'],
+            ['ha', 'sido', 'un', 'placer'],
+            ['que', 'tenga', 'un', 'buen', 'día'],
+            ['que', 'tenga', 'una', 'buena', 'tarde'],
+            ['que', 'tenga', 'una', 'buena', 'noche'],
+            ['hasta', 'la', 'vista'],
+            ['nos', 'vemos', 'pronto'],
+            ['con', 'su', 'permiso'],
+            ['quedo', 'a', 'sus', 'órdenes'],
+            ['estoy', 'a', 'sus', 'órdenes'],
+            ['quedo', 'a', 'su', 'disposición'],
+            ['estoy', 'a', 'su', 'disposición'],
+            ['gracias', 'por', 'todo'],
+            ['muchas', 'gracias'],
+            ['hasta', 'la', 'próxima']
+        ]
