@@ -59,9 +59,15 @@ class MNLPTK:
             if greetings:
                 print('Saludo detectado +5 puntos')
                 final_score += 5
+            else:
+                print('Saludo no detectado -10 puntos')
+                final_score -= 10
             if farewells:
                 print('Despedida detectada +5 puntos')
                 final_score += 5
+            else:
+                print('Despedida no detectada -10 puntos')
+                final_score -= 10
 
         for cut_point in sorted(self.score_labels.keys(), reverse=True):
             if final_score > cut_point:
@@ -138,7 +144,7 @@ class MNLPTK:
 
     # Listar los lexemas usados por categoría
     def list_lexemas(self, lexemas_used):
-        print('\nLexemas usados:')
+        print('Lexemas usados:')
         list_lexemas = []
         for token1 in self.tokens_score.keys():
             if token1 != 'NEUTRAS':
@@ -193,6 +199,7 @@ class MNLPTK:
             ['fue', 'un', 'placer'],
             ['ha', 'sido', 'un', 'placer'],
             ['que', 'tenga', 'un', 'buen', 'día'],
+            ['que', 'tenga', 'un', 'exelente', 'día'],
             ['que', 'tenga', 'una', 'buena', 'tarde'],
             ['que', 'tenga', 'una', 'buena', 'noche'],
             ['hasta', 'la', 'vista'],
