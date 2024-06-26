@@ -35,19 +35,20 @@ def main(verbose=True):
                 window['-OUTPUT-'].update('')
                 window.refresh()
 
-                atc_score = mnlptk.score(atc_file)
+                atc_score = mnlptk.score(atc_file, 'ATC')
                 window['-PROGRESS-'].update(50)
                 window.refresh()
 
-                exp_score = mnlptk.score(exp_file)
+                exp_score = mnlptk.score(exp_file, 'EXP')
                 window['-PROGRESS-'].update(100)
                 window.refresh()
 
-                average_score = (atc_score + exp_score) / 2
-
-                print(f'Puntuación ATC: {atc_score}')
-                print(f'Puntuación EXP: {exp_score}')
-                print(f'Puntuación general: {average_score}\n')
+                avg_score = round((atc_score + exp_score) / 2)
+                # Imprimir la puntuación general promedio
+                for cut_point in sorted(mnlptk.score_labels.keys(), reverse=True):
+                    if avg_score > cut_point:
+                        print(f'Puntuación general: {avg_score} {mnlptk.score_labels[cut_point]}\n')
+                        break
 
                 window['-PROGRESS-'].update(0, visible=False)
             else:
