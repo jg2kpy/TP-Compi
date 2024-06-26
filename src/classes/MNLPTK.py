@@ -67,29 +67,20 @@ class MNLPTK:
                 return final_score
 
     def lexical_analyzer(self, file_dir):
-        lexemas_used = {}
 
         with open(file_dir, 'r', encoding='utf-8') as input_file:
             try:
-
                 # Tokenizar el contenido del archivo
-                tokenized_text = self.tokenizer(input_file.read())
-                partial_score = 0
+                tokens, new_lexamas, lexemas_used = self.tokenizer(input_file.read())
                 non_neutral_lexemas = 1
                 new_lexamas = 0
 
                 # Iterar a través de los lexemas tokenizados
-                for lexemas in tokenized_text:
-                    token = self.tokens.get(lexemas)
-                    if token:
-                        partial_score += self.tokens_score[token]
-                        if self.tokens_score[token] != 0:
-                            non_neutral_lexemas += 1
-                    else:
-                        self.tokens.add(lexemas, 'NEUTRAS')
-                        new_lexamas = new_lexamas + 1
-
-                    lexemas_used[lexemas] = self.tokens.hash_table[lexemas]
+                partial_score = 0
+                for token in tokens:
+                    partial_score += self.tokens_score[token]
+                    if token == 'NEUTRAS':
+                        non_neutral_lexemas = non_neutral_lexemas + 1
 
                 # Devolver el número de nuevos lexemas, la puntuación parcial promedio y los lexemas utilizados
                 return (new_lexamas, partial_score / non_neutral_lexemas,
@@ -106,12 +97,23 @@ class MNLPTK:
 
     # Tokenizar el texto
     def tokenizer(self, text):
-        processed_words = []
+
+        tokens = []
+        new_lexamas = 0
+        lexemas_used = {}
+
         for word in text.split():
             clean_word = word.strip(self.punctuation_signs_spanish)
-            clean_word = clean_word.lower()
-            processed_words.append(clean_word)
-        return processed_words
+            lexema = clean_word.lower()
+            lexemas_used.append(lexema)
+            token = self.tokens.get(lexema)
+            if token:
+                tokens.append(token)
+            else:
+                self.tokens.add(lexema, 'NEUTRAS')
+                tokens.append('NEUTRAS')
+                new_lexamas = new_lexamas + 1
+        return tokens, new_lexamas, lexemas_used
 
     # Verificar si hay un saludo en los lexemas usados
     def verify_greeting(self, lexemas_used):
