@@ -5,7 +5,7 @@ from classes.MNLPTK import MNLPTK
 tokens_dir = './tokens/'
 examples_dir = '../examples/'
 
-def main(verbose=False):
+def main(verbose=True):
     mnlptk = MNLPTK(tokens_dir, verbose)
 
     layout = [

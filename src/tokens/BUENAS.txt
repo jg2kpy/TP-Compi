@@ -1,5 +1,6 @@
 bueno
 buenos
+buen
 saluda
 saludo
 agradable

@@ -8,7 +8,7 @@ tokens_dir = './tokens/'
 # Directorio donde se encuentran los archivos de ejemplos
 examples_dir = '../examples/'
 
-def main(verbose=False):
+def main(verbose=True):
     mnlptk = mnlptk_class.MNLPTK(tokens_dir, verbose)
     scores = []
 
